@@ -13,6 +13,7 @@ import time
 import json
 from typing import List
 
+from maze.helper import write_timing_to_csv
 from maze.util import Coordinates
 from maze.maze import Maze
 from maze.arrayMaze import ArrayMaze
@@ -111,13 +112,10 @@ if __name__ == '__main__':
 
 		# stop timer
 		endGenTime: float = time.perf_counter()
-
-		print(f'Generation took {endGenTime - startGenTime:0.4f} seconds')
-		total_time = endGenTime - startGenTime
-		times = {
-			'updateWall': updateWall_time,
-			'neighbours': neighbours_time
-		}
+		# print(f'Generation took {endGenTime - startGenTime:0.4f} seconds')
+		# wall_density = maze.calculate_wall_density()
+		if isinstance(maze, GraphMaze):
+			write_timing_to_csv(dsApproach, f'{str(rowNum)}x{str(colNum)}', maze.update_wall_times, maze.neighbours_times)
 
 		# add/generate the entrances and exits
 		generator.addEntrances(maze)

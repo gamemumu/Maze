@@ -10,7 +10,7 @@
 from typing import List
 
 from maze.maze import Maze
-from maze.time import time_function
+from maze.helper import time_function
 from maze.util import Coordinates
 from maze.graph import Graph
 from maze.adjListGraph import AdjListGraph
@@ -32,12 +32,14 @@ class GraphMaze(Maze):
         """
 
         super().__init__(rowNum, colNum)
+        self.update_wall_times = []
+        self.neighbours_times = []
         self.m_graph : Graph = None
         if graphType == 'ls':
-            print('==== List Graph is processing ====')
+            # print('==== List Graph is processing ====')
             self.m_graph = AdjListGraph()
         elif graphType == 'mt':
-            print('==== Matrix Graph is processing ====')
+            # print('==== Matrix Graph is processing ====')
             self.m_graph = AdjMatGraph()
 
 
@@ -74,8 +76,10 @@ class GraphMaze(Maze):
 
         # only can add wall if adjacent
         if self.m_graph.hasEdge(cell1, cell2):
-            self.m_graph.updateWall(cell1, cell2, True)
-            return True
+            duration, was_wall_added = time_function(self.m_graph.updateWall, cell1, cell2, True)
+            self.update_wall_times.append(duration)
+            # print(f"updateWall took {duration:.4f} seconds")  # Print or log the time taken
+            return was_wall_added
         
         # in all other cases, we return False
         return False
@@ -90,8 +94,10 @@ class GraphMaze(Maze):
 
         # only can remove wall if adjacent
         if self.m_graph.hasEdge(cell1, cell2):
-            self.m_graph.updateWall(cell1, cell2, False)
-            return True
+            duration, was_wall_added = time_function(self.m_graph.updateWall, cell1, cell2, False)
+            self.update_wall_times.append(duration)
+            # print(f"updateWall took {duration:.4f} seconds")  # Print or log the time taken
+            return was_wall_added
         
         # in all other cases, we return False
         return False
@@ -104,7 +110,21 @@ class GraphMaze(Maze):
 
 
     def neighbours(self, cell:Coordinates)->List[Coordinates]:
-        return self.m_graph.neighbours(cell)
+        duration, result = time_function(self.m_graph.neighbours, cell)
+        self.neighbours_times.append(duration)
+        # print(f"neighbours took {duration:.4f} seconds") 
+        return result
 
+    def calculate_wall_density(self):
+        total_possible_edges = self.m_rowNum * (self.m_colNum - 1) * 2  # Possible horizontal and vertical connections
+        wall_count = 0
+        for row in range(self.m_rowNum):
+            for col in range(self.m_colNum - 1):
+                if self.m_graph.getWallStatus(Coordinates(row, col), Coordinates(row, col + 1)):
+                    wall_count += 1
+                if self.m_graph.getWallStatus(Coordinates(col, row), Coordinates(col + 1, row)):
+                    wall_count += 1
+        wall_density = wall_count / total_possible_edges if total_possible_edges > 0 else 0
+        return wall_density
 
     
