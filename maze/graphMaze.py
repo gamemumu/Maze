@@ -10,7 +10,6 @@
 from typing import List
 
 from maze.maze import Maze
-from maze.time import time_function
 from maze.util import Coordinates
 from maze.graph import Graph
 from maze.adjListGraph import AdjListGraph

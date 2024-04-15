@@ -113,12 +113,7 @@ if __name__ == '__main__':
 		endGenTime: float = time.perf_counter()
 
 		print(f'Generation took {endGenTime - startGenTime:0.4f} seconds')
-		total_time = endGenTime - startGenTime
-		times = {
-			'updateWall': updateWall_time,
-			'neighbours': neighbours_time
-		}
-
+		
 		# add/generate the entrances and exits
 		generator.addEntrances(maze)
 		generator.addExits(maze)

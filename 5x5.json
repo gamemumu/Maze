@@ -1,9 +1,9 @@
 {
     "dataStructure": "ls",
-    "rowNum": 10,
-    "colNum": 10,
+    "rowNum": 5,
+    "colNum": 5,
     "entrances": [[0,-1],[-1,1]],
-    "exits": [[7,10],[10,9]], 
+    "exits": [[3,5],[5,4]],
     "generator": "recur",
     "visualise": true
 }
